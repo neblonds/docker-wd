@@ -1,0 +1,74 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+
+	client_max_body_size 32M;
+	root /var/www/html/web;
+
+
+	server_name _;
+
+	set $yii_bootstrap "index.php";
+	charset utf-8;
+	index index.php index.html index.htm;
+	add_header Strict-Transport-Security "max-age=31536000";
+	add_header X-Frame-Options SAMEORIGIN;
+
+	location / {
+		try_files $uri $uri/ /$yii_bootstrap?$args;
+	}
+
+    location ~ ^/(protected|framework|themes/\w+/views) {
+            deny  all;
+    }	
+
+    location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+            try_files $uri =404;
+    }
+
+
+	location ~ \.php$ {
+            try_files $uri =404;
+			fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	        fastcgi_connect_timeout     30s;
+	        fastcgi_read_timeout        30s;
+	        fastcgi_send_timeout        60s;            
+            include fastcgi_params;
+            include fastcgi.conf;
+	}
+
+    location ~ /\.ht {
+        deny all;
+  	}	
+}
+
+server {
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	ssl_certificate      /etc/ssl/certs/whitedigital.local.crt;
+    ssl_certificate_key  /etc/ssl/certs/whitedigital.local.key;	
+
+	root /var/www/html;
+
+	# Add index.php to the list if you are using PHP
+	index index.php index.html index.htm;
+
+	server_name whitedigital.local.io;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+	location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+    }
+    location ~ /\.ht {
+        deny all;
+  	}
+
+	
+}
