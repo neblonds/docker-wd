@@ -2,7 +2,7 @@ FROM ubuntu:latest
 #Update Ubuntu
 RUN apt-get update
 #install nginx, php-fpm
-RUN apt-get install -y nginx php-fpm php-mysql php-gd php-bcmath php-zip php-xml php-curl php-intl php-memcached php-xdebug && rm-rf /var/lib/apt/lists/* 
+RUN apt-get install -y nginx php-fpm php-mysql php-gd php-bcmath php-zip php-xml php-curl php-intl php-memcached php-xdebug 
 #defining the environment
 ENV nginx_vhost /etc/nginx/sites-available/default
 ENV php_conf /etc/php/7.0/fpm/php.ini
@@ -10,7 +10,6 @@ ENV nginx_conf /etc/nginx/nginx.conf
 
 #Enabling php-fpm on nginx server
 COPY default ${nginx_vhost}
-RUN sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g'${php_conf} && echo "\ndaemon off;">>${nginx_conf}
 
 #Copying php.ini file to the server
 COPY php.ini ${php_conf}
