@@ -15,7 +15,7 @@ services:
        - ./public_html:/var/www/html
        - ./sites-enabled:/etc/nginx/sites-enabled
        - ./certs:/etc/ssl/certs
-     command: /start.sh
+     #  command: /start.sh
      # restart: on-failure
      environment:
         - XDEBUG_REMOTE_HOST=10.0.75.1
