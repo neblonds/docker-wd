@@ -24,4 +24,5 @@ VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/v
 #default container CMD and opening ports for http https, creating start.sh
 COPY start.sh /start.sh
 CMD ["./start.sh"]
+RUN chmod a+x start.sh
 EXPOSE 80 443

@@ -1,0 +1,28 @@
+version: '2.0'
+services:
+   db:
+      image: mysql:5.7
+      ports:
+        - "3306:3306"
+      volumes:
+        - dbvolume:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+   webserver:
+     image: reiniskasparsons/docker-wd
+     # build: .
+     volumes:
+       - ./public_html:/var/www/html
+       - ./sites-enabled:/etc/nginx/sites-enabled
+       - ./certs:/etc/ssl/certs
+     command: /start.sh
+     # restart: on-failure
+     environment:
+        - XDEBUG_REMOTE_HOST=10.0.75.1
+     ports:
+       - "80:80"
+       - "443:443"
+     depends_on:
+        - db
+volumes:
+  dbvolume:
